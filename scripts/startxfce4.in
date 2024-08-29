@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env -S sh --posix
 #
 #  xfce4
 #
@@ -27,10 +27,11 @@ then
     if test "x$OPT" = "x--help"
     then
       # print help and exit
+      echo "[PID $$]"
       echo "Usage:"
       echo "  startxfce4 [OPTIONS...]"
       echo
-      echo "Options:"
+      echo "Available command-line options:"
       echo "  --help                   Show help options"
       echo "  --with-ck-launch         Start xfce4-session inside a"
       echo "                           ConsoleKit session"
@@ -70,7 +71,7 @@ then
     default_compositor="labwc"
     if test "x$OPTS" = "x" && ! command -v "$default_compositor" >/dev/null 2>&1
     then
-      echo "$0: Please either install $default_compositor or specify another compositor as argument"
+      echo "[PID $$] $0: Please either install $default_compositor or specify another compositor as argument"
       exit 1
     fi
     XFCE4_SESSION_COMPOSITOR=${OPTS:-labwc --startup}
@@ -116,14 +117,15 @@ if test "x$XFCE4_SESSION_COMPOSITOR" = "x"
 then
   if test "x$DISPLAY" = "x"
   then
-    echo "$0: Starting X server"
+    echo "[PID $$] $0: X server (version $(X -version 2>&1 | grep -oP '(?<=X Server ).*')) is present."
+    echo "[PID $$] $0: Starting X server."
     prog=xinit
 
     if test ! "x$XDG_VTNR" = "x"; then
       SERVERRC="$SERVERRC vt$XDG_VTNR"
     fi
   else
-    echo "$0: X server already running on display $DISPLAY"
+    echo "[PID $$] $0: X server already running on display $DISPLAY"
     prog=/bin/sh
   fi
 else
